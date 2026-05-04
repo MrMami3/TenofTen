@@ -1,111 +1,112 @@
-// Elementleri Seç
-const menuScreen = document.getElementById('menu-screen');
-const gameScreen = document.getElementById('game-screen');
-const scoreScreen = document.getElementById('score-screen');
-const usernameInput = document.getElementById('username');
-const board = document.getElementById('game-board');
-const nextNumDisplay = document.getElementById('next-number');
-const scoreList = document.getElementById('score-list');
-
+// Global Değişkenler
 let currentNumber = 1;
 let lastSelected = null;
 let currentPlayer = "";
 
-// --- SAYFA YÜKLENDİĞİNDE İSİM KONTROLÜ ---
-window.addEventListener('load', () => {
-    const saved = localStorage.getItem('tenOfTen_Name');
-    if (saved) {
-        usernameInput.value = saved;
-        usernameInput.readOnly = true;
-        usernameInput.style.opacity = "0.5";
-        usernameInput.style.cursor = "not-allowed";
+// Sayfa Yüklendiğinde İsim Kilidini Kontrol Et
+window.onload = function() {
+    const savedName = localStorage.getItem('tenOfTen_Name');
+    const input = document.getElementById('username');
+    if (savedName) {
+        input.value = savedName;
+        input.readOnly = true;
+        input.style.opacity = "0.5";
     }
-});
+};
 
-// --- EKRAN GEÇİŞ FONKSİYONU ---
-function showScreen(target) {
-    menuScreen.classList.add('hidden');
-    gameScreen.classList.add('hidden');
-    scoreScreen.classList.add('hidden');
-    target.classList.remove('hidden');
+// --- EKRAN YÖNETİMİ ---
+function showScreen(screenId) {
+    console.log("Ekran değiştiriliyor: " + screenId); // Çalışıp çalışmadığını konsoldan gör
+    document.getElementById('menu-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.add('hidden');
+    document.getElementById('score-screen').classList.add('hidden');
+    document.getElementById(screenId).classList.remove('hidden');
 }
 
-// --- BUTON TIKLAMALARI (KESİN ÇALIŞAN YÖNTEM) ---
-document.getElementById('play-btn').addEventListener('click', () => {
-    const name = usernameInput.value.trim();
+// --- BUTON FONKSİYONLARI ---
+function playGame() {
+    const input = document.getElementById('username');
+    const name = input.value.trim();
+    
     if (!name) {
-        alert("Bro önce bir isim yaz!");
+        alert("Bro önce ismini yaz!");
         return;
     }
-    
-    // İsmi Kilitle
+
+    // İsim Kaydet ve Kilitle
     if (!localStorage.getItem('tenOfTen_Name')) {
         localStorage.setItem('tenOfTen_Name', name);
-        usernameInput.readOnly = true;
-        usernameInput.style.opacity = "0.5";
+        input.readOnly = true;
+        input.style.opacity = "0.5";
     }
 
     currentPlayer = name;
     document.getElementById('player-label').innerText = "PİLOT: " + name;
-    showScreen(gameScreen);
+    showScreen('game-screen');
     resetGame();
-});
+}
 
-document.getElementById('show-scores-btn').addEventListener('click', () => {
-    renderLeaderboard();
-    showScreen(scoreScreen);
-});
+function openLeaderboard() {
+    renderScores();
+    showScreen('score-screen');
+}
 
-document.getElementById('back-btn').addEventListener('click', () => showScreen(menuScreen));
-document.getElementById('quit-btn').addEventListener('click', () => showScreen(menuScreen));
-document.getElementById('reset-btn').addEventListener('click', resetGame);
+function goToMenu() {
+    showScreen('menu-screen');
+}
 
 // --- OYUN MANTIĞI ---
 function resetGame() {
     currentNumber = 1;
     lastSelected = null;
-    nextNumDisplay.innerText = "1";
+    document.getElementById('next-number').innerText = "1";
+    const board = document.getElementById('game-board');
     board.innerHTML = '';
+    
     for (let i = 0; i < 100; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
-        cell.onclick = () => makeMove(i, cell);
+        cell.onclick = function() { makeMove(i, cell); };
         board.appendChild(cell);
     }
-    drawHints();
+    updateHints();
 }
 
 function makeMove(index, cell) {
-    const r = Math.floor(index / 10), c = index % 10;
+    const r = Math.floor(index / 10);
+    const c = index % 10;
+
     if (cell.classList.contains('filled')) return;
 
-    if (currentNumber === 1 || canPlace(r, c)) {
+    if (currentNumber === 1 || isValidMove(r, c)) {
         cell.innerText = currentNumber;
         cell.classList.add('filled');
         lastSelected = { r, c };
         
         saveScore(currentPlayer, currentNumber);
         
-        if (currentNumber === 100) alert("REİS AKIYORSUN! 100 YAPILDI!");
+        if (currentNumber === 100) alert("EFSANESİN! 100!");
         
         currentNumber++;
-        nextNumDisplay.innerText = currentNumber;
-        drawHints();
+        document.getElementById('next-number').innerText = currentNumber;
+        updateHints();
     }
 }
 
-function canPlace(r, c) {
+function isValidMove(r, c) {
     if (!lastSelected) return true;
     const rd = Math.abs(r - lastSelected.r);
     const cd = Math.abs(c - lastSelected.c);
+    // Düz 3 birim veya Çapraz 2 birim
     return (rd === 3 && cd === 0) || (rd === 0 && cd === 3) || (rd === 2 && cd === 2);
 }
 
-function drawHints() {
-    document.querySelectorAll('.cell').forEach((cell, i) => {
+function updateHints() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach((cell, i) => {
         cell.classList.remove('valid-move');
         const r = Math.floor(i / 10), c = i % 10;
-        if (!cell.classList.contains('filled') && canPlace(r, c)) {
+        if (!cell.classList.contains('filled') && isValidMove(r, c)) {
             cell.classList.add('valid-move');
         }
     });
@@ -113,20 +114,24 @@ function drawHints() {
 
 // --- SKOR TABLOSU ---
 function saveScore(name, score) {
-    let data = JSON.parse(localStorage.getItem('tenOfTen_Scores') || "[]");
-    let user = data.find(x => x.name === name);
-    if (user) { if (score > user.score) user.score = score; }
-    else { data.push({ name, score }); }
-    data.sort((a, b) => b.score - a.score);
-    localStorage.setItem('tenOfTen_Scores', JSON.stringify(data.slice(0, 10)));
+    let scores = JSON.parse(localStorage.getItem('tenOfTen_Scores') || "[]");
+    let userIndex = scores.findIndex(s => s.name === name);
+    if (userIndex > -1) {
+        if (score > scores[userIndex].score) scores[userIndex].score = score;
+    } else {
+        scores.push({ name, score });
+    }
+    scores.sort((a, b) => b.score - a.score);
+    localStorage.setItem('tenOfTen_Scores', JSON.stringify(scores.slice(0, 10)));
 }
 
-function renderLeaderboard() {
-    const data = JSON.parse(localStorage.getItem('tenOfTen_Scores') || "[]");
-    scoreList.innerHTML = data.map((s, i) => `
-        <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #222;">
+function renderScores() {
+    const scores = JSON.parse(localStorage.getItem('tenOfTen_Scores') || "[]");
+    const list = document.getElementById('score-list');
+    list.innerHTML = scores.map((s, i) => `
+        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
             <span>${i+1}. ${s.name}</span>
             <span style="color:#2ecc71">${s.score} Puan</span>
         </div>
-    `).join('') || "Henüz rekor yok!";
+    `).join('') || "Henüz rekor yok bro!";
 }
