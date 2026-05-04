@@ -4,8 +4,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TenOfTen - 100 Reach</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS BÖLÜMÜ */
+        :root {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --bg: #0a0a0a;
+            --card: #151515;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #222;
+            text-align: center;
+            width: 420px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .hidden { display: none !important; }
+
+        .neon-text { 
+            color: var(--primary); 
+            text-shadow: 0 0 15px var(--primary); 
+            font-size: 2.2rem; 
+            margin-top: 0;
+        }
+
+        .brand-label {
+            display: block;
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .input-group { margin-top: 20px; }
+
+        input {
+            width: 80%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Orbitron';
+            outline: none;
+        }
+
+        .button-group, .game-controls { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Orbitron';
+            transition: 0.3s;
+            min-width: 130px;
+        }
+
+        .green-btn { background: var(--primary); color: #000; }
+        .blue-btn { background: var(--secondary); color: #fff; }
+        .red-btn { background: #e74c3c; color: #fff; }
+        .yellow-btn { background: #f1c40f; color: #000; }
+
+        .btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Oyun Alanı */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 35px);
+            gap: 4px;
+            background: #000;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 35px;
+            height: 35px;
+            background: #222;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .cell.valid-move { 
+            background: rgba(52, 152, 219, 0.2); 
+            border: 1px solid var(--secondary); 
+        }
+
+        .cell.filled { 
+            background: var(--primary); 
+            color: #000; 
+            box-shadow: 0 0 10px var(--primary); 
+            font-weight: bold;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .score-list {
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
 
@@ -15,39 +155,159 @@
             <h1 class="neon-text">100 REACH</h1>
             
             <div class="input-group">
-                <label class="brand-label">TenOfTen</label>
-                <input type="text" id="username" placeholder="İsmini Yaz..." maxlength="15">
+                <span class="brand-label">TenOfTen</span>
+                <input type="text" id="username" placeholder="İSİM YAZ..." maxlength="15">
             </div>
 
             <div class="button-group">
-                <button onclick="playGame()" class="btn green-btn">OYNA</button>
-                <button onclick="openLeaderboard()" class="btn blue-btn">SIRALAMA</button>
+                <button onclick="startGame()" class="btn green-btn">PLAY</button>
+                <button onclick="showLeaderboard()" class="btn blue-btn">SCOREBOARD</button>
             </div>
         </div>
 
         <!-- OYUN EKRANI -->
         <div id="game-screen" class="container hidden">
             <div class="game-header">
-                <div id="player-label">PİLOT: ---</div>
-                <div class="score-display">HEDEF: <span id="next-number">1</span></div>
+                <div id="player-display">PİLOT: ---</div>
+                <div>HEDEF: <span id="target-num" style="color:var(--primary)">1</span></div>
             </div>
             
             <div id="game-board" class="grid"></div>
 
             <div class="game-controls">
-                <button onclick="resetGame()" class="btn yellow-btn">SIFIRLA</button>
-                <button onclick="goToMenu()" class="btn red-btn">ANA MENÜ</button>
+                <button onclick="initBoard()" class="btn yellow-btn">SIFIRLA</button>
+                <button onclick="backToMenu()" class="btn red-btn">GERİ</button>
             </div>
         </div>
 
-        <!-- SIRALAMA EKRANI -->
+        <!-- SCOREBOARD EKRANI -->
         <div id="score-screen" class="container hidden">
-            <h2 class="neon-text-blue">LİDERLER</h2>
-            <div class="score-list" id="score-list"></div>
-            <button onclick="goToMenu()" class="btn red-btn">GERİ DÖN</button>
+            <h2 style="color:var(--secondary)">SIRALAMA</h2>
+            <div class="score-list" id="score-data"></div>
+            <button onclick="backToMenu()" class="btn red-btn">ANA MENÜ</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        /* JAVASCRIPT BÖLÜMÜ */
+        let currentNumber = 1;
+        let lastPos = null;
+        let player = "";
+
+        // İsim Kilitleme Kontrolü
+        window.onload = () => {
+            const saved = localStorage.getItem('tenName');
+            if(saved) {
+                const input = document.getElementById('username');
+                input.value = saved;
+                input.readOnly = true;
+                input.style.opacity = "0.5";
+            }
+        };
+
+        function switchScreen(id) {
+            document.getElementById('menu-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('score-screen').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function startGame() {
+            const name = document.getElementById('username').value.trim();
+            if(!name) return alert("İsim yaz bro!");
+
+            if(!localStorage.getItem('tenName')) {
+                localStorage.setItem('tenName', name);
+            }
+
+            player = name;
+            document.getElementById('player-display').innerText = "PİLOT: " + player;
+            switchScreen('game-screen');
+            initBoard();
+        }
+
+        function showLeaderboard() {
+            const data = JSON.parse(localStorage.getItem('tenScores') || "[]");
+            const list = document.getElementById('score-data');
+            list.innerHTML = data.map((s, i) => `
+                <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #222;">
+                    <span>${i+1}. ${s.name}</span>
+                    <span style="color:var(--primary)">${s.score} Puan</span>
+                </div>
+            `).join('') || "Henüz rekor yok.";
+            switchScreen('score-screen');
+        }
+
+        function backToMenu() {
+            switchScreen('menu-screen');
+        }
+
+        function initBoard() {
+            currentNumber = 1;
+            lastPos = null;
+            document.getElementById('target-num').innerText = "1";
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+
+            for (let i = 0; i < 100; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = () => handleCellClick(i, cell);
+                board.appendChild(cell);
+            }
+            highlightMoves();
+        }
+
+        function handleCellClick(idx, cell) {
+            const r = Math.floor(idx / 10);
+            const c = idx % 10;
+
+            if(cell.classList.contains('filled')) return;
+
+            if(currentNumber === 1 || isLegal(r, c)) {
+                cell.innerText = currentNumber;
+                cell.classList.add('filled');
+                lastPos = { r, c };
+
+                updateHighScore(player, currentNumber);
+
+                if(currentNumber === 100) alert("TEBRİKLER REİS!");
+
+                currentNumber++;
+                document.getElementById('target-num').innerText = currentNumber;
+                highlightMoves();
+            }
+        }
+
+        function isLegal(r, c) {
+            if(!lastPos) return true;
+            const dr = Math.abs(r - lastPos.r);
+            const dc = Math.abs(c - lastPos.c);
+            return (dr === 3 && dc === 0) || (dr === 0 && dc === 3) || (dr === 2 && dc === 2);
+        }
+
+        function highlightMoves() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, i) => {
+                cell.classList.remove('valid-move');
+                const r = Math.floor(i / 10), c = i % 10;
+                if(!cell.classList.contains('filled') && isLegal(r, c)) {
+                    cell.classList.add('valid-move');
+                }
+            });
+        }
+
+        function updateHighScore(name, score) {
+            let scores = JSON.parse(localStorage.getItem('tenScores') || "[]");
+            let idx = scores.findIndex(s => s.name === name);
+            if(idx > -1) {
+                if(score > scores[idx].score) scores[idx].score = score;
+            } else {
+                scores.push({ name, score });
+            }
+            scores.sort((a, b) => b.score - a.score);
+            localStorage.setItem('tenScores', JSON.stringify(scores.slice(0, 10)));
+        }
+    </script>
 </body>
 </html>
