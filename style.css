@@ -1,8 +1,7 @@
-/* Önceki stillere ek olarak şunları ekle veya değiştir */
 body {
-    background-color: #1a1a1a;
+    background-color: #121212;
     color: white;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,52 +9,98 @@ body {
     margin: 0;
 }
 
-.overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
+.container {
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 420px;
+}
+
+.hidden { display: none; }
+
+h1 { color: #2ecc71; margin-bottom: 30px; }
+
+/* Giriş Alanı */
+.input-group { margin-bottom: 20px; }
+input {
+    width: 80%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    background: #252525;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Butonlar */
+.button-group {
     display: flex;
     justify-content: center;
-    align-items: center;
-    z-index: 100;
+    gap: 15px;
 }
 
-.modal {
-    background: #333;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 0 20px #2ecc71;
-}
-
-input {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
+.btn {
+    padding: 12px 25px;
     border: none;
-    margin-bottom: 10px;
-    display: block;
-    width: 200px;
-}
-
-.hidden { display: none !important; }
-
-button {
-    padding: 10px 20px;
-    margin: 5px;
-    background-color: #2ecc71;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 10px;
     font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
 }
 
-#reset-btn { background-color: #e74c3c; }
-#leaderboard-btn { background-color: #3498db; }
+.green-btn { background: #2ecc71; color: #121212; }
+.green-btn:hover { background: #27ae60; transform: scale(1.05); }
 
-/* Grid ve Cell stilleri aynı kalabilir */
-.grid { display: grid; grid-template-columns: repeat(10, 35px); gap: 4px; }
-.cell { width: 35px; height: 35px; background: #444; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-.cell.filled { background: #2ecc71; }
-.cell.valid-move { background: #3498db; cursor: pointer; }
+.blue-btn { background: #3498db; color: white; }
+.blue-btn:hover { background: #2980b9; transform: scale(1.05); }
+
+.red-btn { background: #e74c3c; color: white; margin-top: 20px; }
+
+/* Oyun Tahtası */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(10, 35px);
+    gap: 5px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.cell {
+    width: 35px;
+    height: 35px;
+    background: #333;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: default;
+}
+
+.cell.valid-move {
+    background: #34495e;
+    cursor: pointer;
+    border: 1px solid #3498db;
+}
+
+.cell.filled { background: #2ecc71; color: #121212; font-weight: bold; }
+
+/* Skor Listesi */
+.score-list {
+    text-align: left;
+    background: #252525;
+    padding: 15px;
+    border-radius: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
