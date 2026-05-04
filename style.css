@@ -1,7 +1,8 @@
+/* Önceki stillere ek olarak şunları ekle veya değiştir */
 body {
     background-color: #1a1a1a;
     color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,64 +10,52 @@ body {
     margin: 0;
 }
 
-.game-container {
-    text-align: center;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-    gap: 5px;
-    background-color: #333;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
-
-.cell {
-    width: 40px;
-    height: 40px;
-    background-color: #444;
-    border-radius: 4px;
+.overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
+    z-index: 100;
 }
 
-.cell:hover:not(.filled) {
-    background-color: #666;
+.modal {
+    background: #333;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 20px #2ecc71;
 }
 
-.cell.filled {
-    background-color: #2ecc71;
-    color: #fff;
-    cursor: default;
+input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 10px;
+    display: block;
+    width: 200px;
 }
 
-.cell.valid-move {
-    background-color: #3498db;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.6; }
-    100% { opacity: 1; }
-}
-
-.status-panel {
-    margin-bottom: 20px;
-}
+.hidden { display: none !important; }
 
 button {
     padding: 10px 20px;
-    background-color: #e74c3c;
+    margin: 5px;
+    background-color: #2ecc71;
     border: none;
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
+
+#reset-btn { background-color: #e74c3c; }
+#leaderboard-btn { background-color: #3498db; }
+
+/* Grid ve Cell stilleri aynı kalabilir */
+.grid { display: grid; grid-template-columns: repeat(10, 35px); gap: 4px; }
+.cell { width: 35px; height: 35px; background: #444; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.cell.filled { background: #2ecc71; }
+.cell.valid-move { background: #3498db; cursor: pointer; }
