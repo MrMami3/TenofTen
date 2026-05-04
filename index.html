@@ -3,267 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TenOfTen & Mirko Game</title>
+    <title>TenOfTen & Mirko</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2ecc71;
-            --secondary: #3498db;
-            --bg: #0a0a0a;
-            --card: #151515;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Orbitron', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .container {
-            background: var(--card);
-            padding: 30px;
-            border-radius: 20px;
-            border: 2px solid #222;
-            text-align: center;
-            width: 450px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
+        :root { --primary: #2ecc71; --secondary: #3498db; --bg: #0a0a0a; }
+        body { background: var(--bg); color: white; font-family: 'Orbitron', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        .container { background: #151515; padding: 30px; border-radius: 20px; border: 2px solid #222; text-align: center; width: 420px; box-shadow: 0 0 30px rgba(0,0,0,0.8); position: relative; }
         .page { display: none; }
         .active { display: block !important; }
-
-        .main-title {
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--primary);
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: 'Orbitron';
-            transition: 0.3s;
-            display: block;
-            width: 100%;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-
+        .btn { padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-family: 'Orbitron'; transition: 0.3s; display: block; width: 100%; margin-bottom: 10px; font-size: 1rem; }
         .green { background: var(--primary); color: #000; }
         .blue { background: var(--secondary); color: #fff; }
         .red { background: #e74c3c; color: #fff; }
-
-        /* MIRKO OYUNU STİLLERİ */
-        #mirko-stage {
-            width: 100%;
-            height: 300px;
-            background: #000;
-            border-radius: 15px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        #mirko-img {
-            width: 150px;
-            transition: transform 0.1s;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        .weapon-rack {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .weapon {
-            width: 60px;
-            height: 60px;
-            background: #222;
-            border: 2px solid #444;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-        }
-
-        .weapon.selected { border-color: var(--primary); background: #333; }
-
-        /* Vuruş Efekti */
-        .hit-effect {
-            position: absolute;
-            color: red;
-            font-weight: bold;
-            font-size: 24px;
-            pointer-events: none;
-            animation: flyUp 0.5s ease-out forwards;
-        }
-
-        @keyframes flyUp {
-            0% { transform: translateY(0) opacity(1); }
-            100% { transform: translateY(-50px) opacity(0); }
-        }
-
-        /* ÖZEL MOUSE İMLECİ */
-        .custom-cursor {
-            cursor: none !important;
-        }
         
-        #sopa-cursor {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            font-size: 40px;
-            display: none;
-            transform: translate(-50%, -50%) rotate(-45deg);
-        }
-
-        /* TEN OF TEN TABLOSU AYARLARI */
+        /* TEN OF TEN TABLOSU */
         .grid { display: grid; grid-template-columns: repeat(10, 35px); gap: 5px; margin: 20px auto; width: fit-content; }
         .cell { width: 35px; height: 35px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; border-radius: 4px; }
-        .cell.filled { background: var(--primary); color: #000; font-weight: bold; }
+        .cell.filled { background: var(--primary); color: #000; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
         .cell.hint { background: rgba(52, 152, 219, 0.2); border: 1px solid var(--secondary); }
+
+        /* MİRKO OYUNU */
+        #mirko-img { width: 220px; height: 220px; object-fit: cover; border-radius: 20px; transition: 0.1s; user-select: none; -webkit-user-drag: none; }
+        .weapon-box { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .w-btn { width: 65px; height: 65px; background: #222; border: 2px solid #444; border-radius: 12px; cursor: pointer; font-size: 30px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .w-btn.selected { border-color: var(--primary); background: #222; box-shadow: 0 0 15px var(--primary); }
+        
+        /* CUSTOM CURSOR */
+        .cursor-active { cursor: none !important; }
+        #sopa-cursor { position: fixed; pointer-events: none; z-index: 9999; font-size: 50px; display: none; transform: translate(-50%, -50%) rotate(-45deg); }
+        input { width: 85%; padding: 12px; background: #000; border: 2px solid var(--primary); color: white; border-radius: 10px; text-align: center; margin-bottom: 20px; font-family: 'Orbitron'; outline: none; }
+        input:read-only { opacity: 0.5; cursor: not-allowed; border-color: #444; }
     </style>
 </head>
-<body>
+<body id="main-body">
 
     <div id="sopa-cursor">🏏</div>
 
-    <!-- PORTAL (GİRİŞ EKRANI) -->
-    <div id="portal-page" class="container page active">
-        <h1 class="main-title">OYUN PORTALI</h1>
-        <button onclick="showPage('ten-menu')" class="btn green">TenOfTen OYNA</button>
-        <button onclick="showPage('mirko-game')" class="btn blue">MIRKO'YU BENZET</button>
+    <!-- 1. PORTAL LOBİ -->
+    <div id="lobby-page" class="container page active">
+        <h1 style="color:var(--primary); text-shadow: 0 0 15px var(--primary); font-size: 3rem; margin-bottom: 40px;">TEN OF TEN</h1>
+        <button onclick="changePage('ten-menu')" class="btn green">TenOfTen OYNA</button>
+        <button onclick="changePage('mirko-page')" class="btn blue">MİRKO'YU DÖV</button>
     </div>
 
-    <!-- TEN OF TEN MENÜ -->
+    <!-- 2. TEN OF TEN GİRİŞ -->
     <div id="ten-menu" class="container page">
-        <h1 style="color:var(--primary)">TenOfTen</h1>
-        <input type="text" id="user-input" placeholder="İSMİNİ YAZ..." style="width:80%; padding:10px; margin-bottom:20px; background:#000; border:1px solid var(--primary); color:white; font-family:'Orbitron';">
+        <h2 style="color:var(--primary)">TenOfTen Giriş</h2>
+        <input type="text" id="user-input" placeholder="İSMİNİ YAZ..." maxlength="15">
         <button onclick="startTen()" class="btn green">BAŞLA</button>
-        <button onclick="showPage('portal-page')" class="btn red">GERİ DÖN</button>
+        <button onclick="changePage('lobby-page')" class="btn red">LOBİYE DÖN</button>
     </div>
 
-    <!-- TEN OF TEN OYUN -->
+    <!-- 3. TEN OF TEN OYUN TAHTASI -->
     <div id="ten-game" class="container page">
+        <div style="display:flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 10px;">
+            <div id="active-p"></div>
+            <div>HEDEF: <span id="cur-num" style="color:var(--primary)">1</span></div>
+        </div>
         <div id="board" class="grid"></div>
-        <button onclick="showPage('portal-page')" class="btn red">ÇIKIŞ</button>
+        <button onclick="initTen()" class="btn blue">SIFIRLA</button>
+        <button onclick="changePage('lobby-page')" class="btn red">ÇIKIŞ</button>
     </div>
 
-    <!-- MIRKO OYUNU -->
-    <div id="mirko-game" class="container page">
-        <h2 style="color:var(--secondary)">MIRKO'YU BENZET</h2>
-        <div id="mirko-stage" onclick="hitMirko(event)">
-            <!-- Mirko'nun fotoğrafı buraya gelecek -->
-            <img id="mirko-img" src="mirko.jpg" alt="MIRKO" onerror="this.src='https://via.placeholder.com/150?text=MIRKO'">
+    <!-- 4. MİRKO DÖVMECE -->
+    <div id="mirko-page" class="container page">
+        <h2 style="color:var(--secondary)">MİRKO'YU DÖV</h2>
+        <div style="padding: 10px; position: relative;" id="hit-zone">
+            <img id="mirko-img" src="mirko.jpg" onclick="hit(event)" onerror="this.src='https://via.placeholder.com/220?text=MIRKO'">
         </div>
-        <div class="weapon-rack">
-            <div class="weapon" onclick="selectWeapon('🏏', this)">🏏</div>
-            <div class="weapon" onclick="selectWeapon('🪓', this)">🪓</div>
-            <div class="weapon" onclick="selectWeapon('🥊', this)">🥊</div>
+        <div class="weapon-box">
+            <div class="w-btn" id="w1" onclick="pick('🏏', 'w1')">🏏</div>
+            <div class="w-btn" id="w2" onclick="pick('🪓', 'w2')">🪓</div>
+            <div class="w-btn" id="w3" onclick="pick('🥊', 'w3')">🥊</div>
         </div>
-        <p id="hit-count" style="margin-top:15px">HASAR: 0</p>
+        <p id="mirko-stats" style="margin-top: 20px; font-weight: bold;">HASAR: 0</p>
         <button onclick="exitMirko()" class="btn red">LOBİYE DÖN</button>
     </div>
 
-    <script>
-        let currentWeapon = "";
-        let damage = 0;
+    <audio id="hit-sound" src="tok.mp3"></audio>
 
-        // Sayfa Değiştirme
-        function showPage(id) {
+    <script>
+        let num = 1, last = null, activeUser = "", darbe = 0, selectedW = "";
+        const snd = document.getElementById('hit-sound'), csr = document.getElementById('sopa-cursor');
+
+        // Sayfa Yönetimi
+        function changePage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(id !== 'mirko-game') exitMirko(); // Mirko'dan çıkınca imleci düzelt
+            if(id === 'ten-menu') checkUser();
         }
 
-        // --- MIRKO OYUNU MANTIĞI ---
-        function selectWeapon(w, el) {
-            currentWeapon = w;
-            document.querySelectorAll('.weapon').forEach(v => v.classList.remove('selected'));
-            el.classList.add('selected');
-            
-            // Mouse imlecini değiştirme
-            document.body.classList.add('custom-cursor');
-            const c = document.getElementById('sopa-cursor');
-            c.innerText = w;
-            c.style.display = "block";
-        }
-
-        // İmleci Takip Et
-        document.addEventListener('mousemove', (e) => {
-            const c = document.getElementById('sopa-cursor');
-            c.style.left = e.clientX + 'px';
-            c.style.top = e.clientY + 'px';
-        });
-
-        function hitMirko(e) {
-            if(!currentWeapon) {
-                alert("Önce bir silah seç bro!");
-                return;
+        // --- TEN OF TEN MANTIĞI ---
+        function checkUser() {
+            const saved = localStorage.getItem('ten_user');
+            if(saved) {
+                const inp = document.getElementById('user-input');
+                inp.value = saved; inp.readOnly = true;
             }
-            
-            damage++;
-            document.getElementById('hit-count').innerText = "HASAR: " + damage;
-
-            // Animasyon
-            const img = document.getElementById('mirko-img');
-            img.style.transform = "scale(0.9) rotate(10deg)";
-            setTimeout(() => { img.style.transform = "scale(1) rotate(0deg)"; }, 100);
-
-            // Vuruş Efekti
-            const effect = document.createElement('div');
-            effect.className = 'hit-effect';
-            effect.innerText = "-10";
-            effect.style.left = e.offsetX + 'px';
-            effect.style.top = e.offsetY + 'px';
-            document.getElementById('mirko-stage').appendChild(effect);
-            setTimeout(() => effect.remove(), 500);
         }
 
-        function exitMirko() {
-            currentWeapon = "";
-            document.body.classList.remove('custom-cursor');
-            document.getElementById('sopa-cursor').style.display = "none";
-            showPage('portal-page');
-        }
-
-        // --- TEN OF TEN BAŞLATICI (SADELEŞTİRİLMİŞ) ---
         function startTen() {
-            const n = document.getElementById('user-input').value;
-            if(!n) return alert("İsim yaz bro!");
-            showPage('ten-game');
-            initTenBoard();
+            const inp = document.getElementById('user-input');
+            if(!inp.value.trim()) return alert("İsim yaz bro!");
+            if(!localStorage.getItem('ten_user')) localStorage.setItem('ten_user', inp.value);
+            activeUser = inp.value;
+            document.getElementById('active-p').innerText = activeUser;
+            changePage('ten-game');
+            initTen();
         }
 
-        function initTenBoard() {
+        function initTen() {
+            num = 1; last = null;
+            document.getElementById('cur-num').innerText = "1";
             const b = document.getElementById('board');
             b.innerHTML = '';
             for(let i=0; i<100; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.onclick = () => { cell.classList.add('filled'); cell.innerText = "X"; };
-                b.appendChild(cell);
+                const c = document.createElement('div');
+                c.className = 'cell';
+                c.onclick = () => move(i, c);
+                b.appendChild(c);
+            }
+            refreshTen();
+        }
+
+        function move(i, c) {
+            const r = Math.floor(i/10), col = i%10;
+            if(c.classList.contains('filled')) return;
+            if(num === 1 || checkMove(r, col)) {
+                c.innerText = num; c.classList.add('filled');
+                last = {r, col}; num++;
+                document.getElementById('cur-num').innerText = num;
+                refreshTen();
             }
         }
+
+        function checkMove(r, c) {
+            if(!last) return true;
+            const dr = Math.abs(r - last.r), dc = Math.abs(c - last.col);
+            return (dr === 3 && dc === 0) || (dr === 0 && dc === 3) || (dr === 2 && dc === 2);
+        }
+
+        function refreshTen() {
+            document.querySelectorAll('.cell').forEach((c, i) => {
+                c.classList.remove('hint');
+                if(!c.classList.contains('filled') && checkMove(Math.floor(i/10), i%10)) c.classList.add('hint');
+            });
+        }
+
+        // --- MİRKO MANTIĞI ---
+        function pick(e, id) {
+            selectedW = e; csr.innerText = e; csr.style.display = "block";
+            document.getElementById('main-body').classList.add('cursor-active');
+            document.querySelectorAll('.w-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById(id).classList.add('selected');
+        }
+
+        function hit(e) {
+            if(!selectedW) return alert("Sopayı seç bro!");
+            snd.currentTime = 0; snd.play().catch(() => {});
+            darbe++; document.getElementById('mirko-stats').innerText = "HASAR: " + darbe;
+            const img = document.getElementById('mirko-img');
+            img.style.transform = "scale(0.9) rotate(8deg)";
+            img.style.filter = "sepia(1) saturate(10) hue-rotate(-50deg)";
+            setTimeout(() => { img.style.transform = "scale(1)"; img.style.filter = "none"; }, 100);
+        }
+
+        function exitMirko() {
+            selectedW = ""; csr.style.display = "none";
+            document.getElementById('main-body').classList.remove('cursor-active');
+            changePage('lobby-page');
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            csr.style.left = e.clientX + 'px';
+            csr.style.top = e.clientY + 'px';
+        });
     </script>
 </body>
 </html>
