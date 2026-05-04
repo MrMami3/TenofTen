@@ -7,14 +7,35 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <h1>100'e Ulaş!</h1>
+    <!-- Giriş Ekranı -->
+    <div id="login-screen" class="overlay">
+        <div class="modal">
+            <h1>100'e Ulaş!</h1>
+            <input type="text" id="username" placeholder="Adını yaz bro..." maxlength="15">
+            <button id="start-btn">Oyna</button>
+            <button id="leaderboard-btn">Sıralama</button>
+        </div>
+    </div>
+
+    <!-- Sıralama Ekranı -->
+    <div id="leaderboard-screen" class="overlay hidden">
+        <div class="modal">
+            <h2>En İyiler</h2>
+            <ul id="score-list"></ul>
+            <button id="back-btn">Geri</button>
+        </div>
+    </div>
+
+    <!-- Oyun Ekranı -->
+    <div class="game-container hidden" id="game-container">
         <div class="status-panel">
+            <p>Oyuncu: <span id="display-name"></span></p>
             <p>Sıradaki Sayı: <span id="next-number">1</span></p>
-            <button id="reset-btn">Oyunu Sıfırla</button>
+            <button id="reset-btn">Sıfırla</button>
         </div>
         <div id="game-board" class="grid"></div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
