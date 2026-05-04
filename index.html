@@ -5,37 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>100 Sayı Bulmacası</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div class="main-wrapper">
+        <!-- ANA MENÜ -->
         <div id="menu-screen" class="container">
-            <h1>100'e Ulaş!</h1>
+            <h1 class="neon-text">100 REACH</h1>
             
             <div class="input-group">
-                <input type="text" id="username" placeholder="İsmini Yaz Bro..." maxlength="15">
+                <input type="text" id="username" placeholder="Kullanıcı Adı" maxlength="15">
             </div>
 
             <div class="button-group">
-                <button id="play-btn" class="btn green-btn">PLAY</button>
-                <button id="show-scores-btn" class="btn blue-btn">SCOREBOARD</button>
+                <button id="play-btn" class="btn green-btn">OYNA</button>
+                <button id="show-scores-btn" class="btn blue-btn">SIRALAMA</button>
             </div>
         </div>
 
+        <!-- OYUN EKRANI -->
         <div id="game-screen" class="container hidden">
             <div class="game-header">
-                <span id="player-label"></span>
-                <span class="score-label">Sayı: <b id="next-number">1</b></span>
+                <div id="player-label"></div>
+                <div class="score-display">HEDEF: <span id="next-number">1</span></div>
             </div>
+            
             <div id="game-board" class="grid"></div>
-            <button id="quit-btn" class="btn red-btn">Menüye Dön</button>
+
+            <div class="game-controls">
+                <button id="reset-btn" class="btn yellow-btn">SIFIRLA</button>
+                <button id="quit-btn" class="btn red-btn">GERİ DÖN</button>
+            </div>
         </div>
 
+        <!-- SIRALAMA EKRANI -->
         <div id="score-screen" class="container hidden">
-            <h2>Liderler Tablosu</h2>
-            <div class="score-list" id="score-list">
-                </div>
-            <button id="back-btn" class="btn red-btn">Geri Dön</button>
+            <h2 class="neon-text-blue">LİDERLER</h2>
+            <div class="score-list" id="score-list"></div>
+            <button id="back-btn" class="btn red-btn">ANA MENÜ</button>
         </div>
     </div>
 
