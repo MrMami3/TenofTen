@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TenOfTen</title>
+    <title>TenOfTen & Mirko Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,6 +22,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
         .container {
@@ -30,49 +31,19 @@
             border-radius: 20px;
             border: 2px solid #222;
             text-align: center;
-            width: 420px;
+            width: 450px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            position: relative;
         }
 
         .page { display: none; }
         .active { display: block !important; }
 
-        /* BAŞLIK BURASI - TenOfTen */
         .main-title {
             color: var(--primary);
             text-shadow: 0 0 20px var(--primary);
-            font-size: 3rem;
-            margin: 0 0 40px 0;
-            letter-spacing: 5px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        input {
-            width: 80%;
-            padding: 15px;
-            background: #000;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 25px;
-            font-family: 'Orbitron';
-            font-size: 1.1rem;
-            outline: none;
-        }
-
-        input:read-only {
-            border-color: #333;
-            color: #666;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
         }
 
         .btn {
@@ -83,208 +54,215 @@
             font-weight: bold;
             font-family: 'Orbitron';
             transition: 0.3s;
-            flex: 1;
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1rem;
         }
 
         .green { background: var(--primary); color: #000; }
         .blue { background: var(--secondary); color: #fff; }
-        .red { background: #e74c3c; color: #fff; margin-top: 20px; width: 100%; }
-        .yellow { background: #f1c40f; color: #000; flex: 1; }
+        .red { background: #e74c3c; color: #fff; }
 
-        .btn:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.2); }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(10, 35px);
-            gap: 5px;
+        /* MIRKO OYUNU STİLLERİ */
+        #mirko-stage {
+            width: 100%;
+            height: 300px;
             background: #000;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 20px auto;
-            width: fit-content;
-        }
-
-        .cell {
-            width: 35px;
-            height: 35px;
-            background: #222;
-            border-radius: 4px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 11px;
-            cursor: pointer;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .cell.hint { background: rgba(52, 152, 219, 0.2); border: 1px solid var(--secondary); }
-        .cell.filled { background: var(--primary); color: #000; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
+        #mirko-img {
+            width: 150px;
+            transition: transform 0.1s;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
 
-        .stats {
+        .weapon-rack {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-size: 0.8rem;
-            color: #888;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
         }
 
-        .score-box {
-            background: #000;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
-            max-height: 250px;
-            overflow-y: auto;
+        .weapon {
+            width: 60px;
+            height: 60px;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
         }
+
+        .weapon.selected { border-color: var(--primary); background: #333; }
+
+        /* Vuruş Efekti */
+        .hit-effect {
+            position: absolute;
+            color: red;
+            font-weight: bold;
+            font-size: 24px;
+            pointer-events: none;
+            animation: flyUp 0.5s ease-out forwards;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0) opacity(1); }
+            100% { transform: translateY(-50px) opacity(0); }
+        }
+
+        /* ÖZEL MOUSE İMLECİ */
+        .custom-cursor {
+            cursor: none !important;
+        }
+        
+        #sopa-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 40px;
+            display: none;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        /* TEN OF TEN TABLOSU AYARLARI */
+        .grid { display: grid; grid-template-columns: repeat(10, 35px); gap: 5px; margin: 20px auto; width: fit-content; }
+        .cell { width: 35px; height: 35px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; border-radius: 4px; }
+        .cell.filled { background: var(--primary); color: #000; font-weight: bold; }
+        .cell.hint { background: rgba(52, 152, 219, 0.2); border: 1px solid var(--secondary); }
     </style>
 </head>
 <body>
 
-    <!-- SADECE TenOfTen BAŞLIĞI VAR -->
-    <div id="menu-page" class="container page active">
-        <div class="main-title">TenOfTen</div>
-        
-        <input type="text" id="user-input" placeholder="İSMİNİ YAZ..." maxlength="15">
+    <div id="sopa-cursor">🏏</div>
 
-        <div class="btn-row">
-            <button onclick="startPlay()" class="btn green">PLAY</button>
-            <button onclick="viewScores()" class="btn blue">SCORES</button>
-        </div>
+    <!-- PORTAL (GİRİŞ EKRANI) -->
+    <div id="portal-page" class="container page active">
+        <h1 class="main-title">OYUN PORTALI</h1>
+        <button onclick="showPage('ten-menu')" class="btn green">TenOfTen OYNA</button>
+        <button onclick="showPage('mirko-game')" class="btn blue">MIRKO'YU BENZET</button>
     </div>
 
-    <!-- OYUN SAYFASI -->
-    <div id="game-page" class="container page">
-        <div class="stats">
-            <div id="p-name"></div>
-            <div>SAYI: <span id="cur-num" style="color:var(--primary)">1</span></div>
-        </div>
+    <!-- TEN OF TEN MENÜ -->
+    <div id="ten-menu" class="container page">
+        <h1 style="color:var(--primary)">TenOfTen</h1>
+        <input type="text" id="user-input" placeholder="İSMİNİ YAZ..." style="width:80%; padding:10px; margin-bottom:20px; background:#000; border:1px solid var(--primary); color:white; font-family:'Orbitron';">
+        <button onclick="startTen()" class="btn green">BAŞLA</button>
+        <button onclick="showPage('portal-page')" class="btn red">GERİ DÖN</button>
+    </div>
+
+    <!-- TEN OF TEN OYUN -->
+    <div id="ten-game" class="container page">
         <div id="board" class="grid"></div>
-        <div class="btn-row">
-            <button onclick="initGame()" class="btn yellow">SIFIRLA</button>
-            <button onclick="goMenu()" class="btn blue">GERİ</button>
-        </div>
+        <button onclick="showPage('portal-page')" class="btn red">ÇIKIŞ</button>
     </div>
 
-    <!-- SIRALAMA SAYFASI -->
-    <div id="score-page" class="container page">
-        <h2 style="color:var(--secondary)">TOP 10</h2>
-        <div id="score-list" class="score-box"></div>
-        <button onclick="goMenu()" class="btn red">ANA MENÜ</button>
+    <!-- MIRKO OYUNU -->
+    <div id="mirko-game" class="container page">
+        <h2 style="color:var(--secondary)">MIRKO'YU BENZET</h2>
+        <div id="mirko-stage" onclick="hitMirko(event)">
+            <!-- Mirko'nun fotoğrafı buraya gelecek -->
+            <img id="mirko-img" src="mirko.jpg" alt="MIRKO" onerror="this.src='https://via.placeholder.com/150?text=MIRKO'">
+        </div>
+        <div class="weapon-rack">
+            <div class="weapon" onclick="selectWeapon('🏏', this)">🏏</div>
+            <div class="weapon" onclick="selectWeapon('🪓', this)">🪓</div>
+            <div class="weapon" onclick="selectWeapon('🥊', this)">🥊</div>
+        </div>
+        <p id="hit-count" style="margin-top:15px">HASAR: 0</p>
+        <button onclick="exitMirko()" class="btn red">LOBİYE DÖN</button>
     </div>
 
     <script>
-        let num = 1;
-        let last = null;
-        let activeUser = "";
+        let currentWeapon = "";
+        let damage = 0;
 
-        function checkIdentity() {
-            const saved = localStorage.getItem('ten_user');
-            const input = document.getElementById('user-input');
-            if(saved) {
-                input.value = saved;
-                input.readOnly = true;
-            }
-        }
-
-        window.onload = checkIdentity;
-
+        // Sayfa Değiştirme
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            if(id !== 'mirko-game') exitMirko(); // Mirko'dan çıkınca imleci düzelt
         }
 
-        function startPlay() {
-            const input = document.getElementById('user-input');
-            const name = input.value.trim();
+        // --- MIRKO OYUNU MANTIĞI ---
+        function selectWeapon(w, el) {
+            currentWeapon = w;
+            document.querySelectorAll('.weapon').forEach(v => v.classList.remove('selected'));
+            el.classList.add('selected');
             
-            if(!name) {
-                alert("İsim yaz bro!");
+            // Mouse imlecini değiştirme
+            document.body.classList.add('custom-cursor');
+            const c = document.getElementById('sopa-cursor');
+            c.innerText = w;
+            c.style.display = "block";
+        }
+
+        // İmleci Takip Et
+        document.addEventListener('mousemove', (e) => {
+            const c = document.getElementById('sopa-cursor');
+            c.style.left = e.clientX + 'px';
+            c.style.top = e.clientY + 'px';
+        });
+
+        function hitMirko(e) {
+            if(!currentWeapon) {
+                alert("Önce bir silah seç bro!");
                 return;
             }
+            
+            damage++;
+            document.getElementById('hit-count').innerText = "HASAR: " + damage;
 
-            if(!localStorage.getItem('ten_user')) {
-                localStorage.setItem('ten_user', name);
-                input.readOnly = true;
-            }
+            // Animasyon
+            const img = document.getElementById('mirko-img');
+            img.style.transform = "scale(0.9) rotate(10deg)";
+            setTimeout(() => { img.style.transform = "scale(1) rotate(0deg)"; }, 100);
 
-            activeUser = name;
-            document.getElementById('p-name').innerText = "PİLOT: " + name;
-            showPage('game-page');
-            initGame();
+            // Vuruş Efekti
+            const effect = document.createElement('div');
+            effect.className = 'hit-effect';
+            effect.innerText = "-10";
+            effect.style.left = e.offsetX + 'px';
+            effect.style.top = e.offsetY + 'px';
+            document.getElementById('mirko-stage').appendChild(effect);
+            setTimeout(() => effect.remove(), 500);
         }
 
-        function viewScores() {
-            const data = JSON.parse(localStorage.getItem('ten_data') || "[]");
-            const list = document.getElementById('score-list');
-            list.innerHTML = data.map((s, i) => `
-                <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #222;">
-                    <span>${i+1}. ${s.name}</span>
-                    <span style="color:var(--primary)">${s.score} Puan</span>
-                </div>
-            `).join('') || "Henüz rekor yok!";
-            showPage('score-page');
+        function exitMirko() {
+            currentWeapon = "";
+            document.body.classList.remove('custom-cursor');
+            document.getElementById('sopa-cursor').style.display = "none";
+            showPage('portal-page');
         }
 
-        function goMenu() {
-            showPage('menu-page');
-            checkIdentity();
+        // --- TEN OF TEN BAŞLATICI (SADELEŞTİRİLMİŞ) ---
+        function startTen() {
+            const n = document.getElementById('user-input').value;
+            if(!n) return alert("İsim yaz bro!");
+            showPage('ten-game');
+            initTenBoard();
         }
 
-        function initGame() {
-            num = 1; last = null;
-            document.getElementById('cur-num').innerText = "1";
+        function initTenBoard() {
             const b = document.getElementById('board');
             b.innerHTML = '';
-            for (let i = 0; i < 100; i++) {
+            for(let i=0; i<100; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
-                cell.onclick = () => move(i, cell);
+                cell.onclick = () => { cell.classList.add('filled'); cell.innerText = "X"; };
                 b.appendChild(cell);
             }
-            refresh();
-        }
-
-        function move(i, cell) {
-            const r = Math.floor(i / 10), c = i % 10;
-            if(cell.classList.contains('filled')) return;
-            if(num === 1 || checkMove(r, c)) {
-                cell.innerText = num;
-                cell.classList.add('filled');
-                last = { r, c };
-                updateScore(activeUser, num);
-                if(num === 100) alert("REİS 100 YAPTI!");
-                num++;
-                document.getElementById('cur-num').innerText = num;
-                refresh();
-            }
-        }
-
-        function checkMove(r, c) {
-            if(!last) return true;
-            const dr = Math.abs(r - last.r);
-            const dc = Math.abs(c - last.c);
-            return (dr === 3 && dc === 0) || (dr === 0 && dc === 3) || (dr === 2 && dc === 2);
-        }
-
-        function refresh() {
-            document.querySelectorAll('.cell').forEach((cell, i) => {
-                cell.classList.remove('hint');
-                const r = Math.floor(i / 10), c = i % 10;
-                if(!cell.classList.contains('filled') && checkMove(r, c)) {
-                    cell.classList.add('hint');
-                }
-            });
-        }
-
-        function updateScore(n, s) {
-            let scores = JSON.parse(localStorage.getItem('ten_data') || "[]");
-            let idx = scores.findIndex(x => x.name === n);
-            if(idx > -1) {
-                if(s > scores[idx].score) scores[idx].score = s;
-            } else {
-                scores.push({ name: n, score: s });
-            }
-            scores.sort((a, b) => b.score - a.score);
-            localStorage.setItem('ten_data', JSON.stringify(scores.slice(0, 10)));
         }
     </script>
 </body>
