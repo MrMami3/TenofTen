@@ -37,13 +37,15 @@
         .page { display: none; }
         .active { display: block !important; }
 
+        /* BAŞLIK BURASI - TenOfTen */
         .main-title {
             color: var(--primary);
             text-shadow: 0 0 20px var(--primary);
-            font-size: 3.5rem;
-            margin-bottom: 40px;
-            letter-spacing: 8px;
+            font-size: 3rem;
+            margin: 0 0 40px 0;
+            letter-spacing: 5px;
             font-weight: 700;
+            text-transform: uppercase;
         }
 
         input {
@@ -137,10 +139,12 @@
 </head>
 <body>
 
-    <!-- SADECE TenOfTen YAZAN ANA MENÜ -->
+    <!-- SADECE TenOfTen BAŞLIĞI VAR -->
     <div id="menu-page" class="container page active">
-        <h1 class="main-title">TenOfTen</h1>
+        <div class="main-title">TenOfTen</div>
+        
         <input type="text" id="user-input" placeholder="İSMİNİ YAZ..." maxlength="15">
+
         <div class="btn-row">
             <button onclick="startPlay()" class="btn green">PLAY</button>
             <button onclick="viewScores()" class="btn blue">SCORES</button>
@@ -172,7 +176,6 @@
         let last = null;
         let activeUser = "";
 
-        // Sayfa her açıldığında ismi kontrol et ve kilitliyse inputu kapat
         function checkIdentity() {
             const saved = localStorage.getItem('ten_user');
             const input = document.getElementById('user-input');
@@ -198,7 +201,6 @@
                 return;
             }
 
-            // Play'e basıldığı an ismi sonsuza kadar kilitle
             if(!localStorage.getItem('ten_user')) {
                 localStorage.setItem('ten_user', name);
                 input.readOnly = true;
