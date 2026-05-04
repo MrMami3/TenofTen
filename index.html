@@ -7,33 +7,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Giriş Ekranı -->
-    <div id="login-screen" class="overlay">
-        <div class="modal">
+
+    <div class="main-wrapper">
+        <div id="menu-screen" class="container">
             <h1>100'e Ulaş!</h1>
-            <input type="text" id="username" placeholder="Adını yaz bro..." maxlength="15">
-            <button id="start-btn">Oyna</button>
-            <button id="leaderboard-btn">Sıralama</button>
-        </div>
-    </div>
+            
+            <div class="input-group">
+                <input type="text" id="username" placeholder="İsmini Yaz Bro..." maxlength="15">
+            </div>
 
-    <!-- Sıralama Ekranı -->
-    <div id="leaderboard-screen" class="overlay hidden">
-        <div class="modal">
-            <h2>En İyiler</h2>
-            <ul id="score-list"></ul>
-            <button id="back-btn">Geri</button>
+            <div class="button-group">
+                <button id="play-btn" class="btn green-btn">PLAY</button>
+                <button id="show-scores-btn" class="btn blue-btn">SCOREBOARD</button>
+            </div>
         </div>
-    </div>
 
-    <!-- Oyun Ekranı -->
-    <div class="game-container hidden" id="game-container">
-        <div class="status-panel">
-            <p>Oyuncu: <span id="display-name"></span></p>
-            <p>Sıradaki Sayı: <span id="next-number">1</span></p>
-            <button id="reset-btn">Sıfırla</button>
+        <div id="game-screen" class="container hidden">
+            <div class="game-header">
+                <span id="player-label"></span>
+                <span class="score-label">Sayı: <b id="next-number">1</b></span>
+            </div>
+            <div id="game-board" class="grid"></div>
+            <button id="quit-btn" class="btn red-btn">Menüye Dön</button>
         </div>
-        <div id="game-board" class="grid"></div>
+
+        <div id="score-screen" class="container hidden">
+            <h2>Liderler Tablosu</h2>
+            <div class="score-list" id="score-list">
+                </div>
+            <button id="back-btn" class="btn red-btn">Geri Dön</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
