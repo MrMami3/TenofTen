@@ -40,9 +40,10 @@
         .main-title {
             color: var(--primary);
             text-shadow: 0 0 20px var(--primary);
-            font-size: 3rem;
-            margin-bottom: 30px;
-            letter-spacing: 5px;
+            font-size: 3.5rem;
+            margin-bottom: 40px;
+            letter-spacing: 8px;
+            font-weight: 700;
         }
 
         input {
@@ -60,8 +61,8 @@
         }
 
         input:read-only {
-            border-color: #444;
-            color: #888;
+            border-color: #333;
+            color: #666;
             cursor: not-allowed;
             opacity: 0.6;
         }
@@ -136,6 +137,7 @@
 </head>
 <body>
 
+    <!-- SADECE TenOfTen YAZAN ANA MENÜ -->
     <div id="menu-page" class="container page active">
         <h1 class="main-title">TenOfTen</h1>
         <input type="text" id="user-input" placeholder="İSMİNİ YAZ..." maxlength="15">
@@ -145,6 +147,7 @@
         </div>
     </div>
 
+    <!-- OYUN SAYFASI -->
     <div id="game-page" class="container page">
         <div class="stats">
             <div id="p-name"></div>
@@ -157,6 +160,7 @@
         </div>
     </div>
 
+    <!-- SIRALAMA SAYFASI -->
     <div id="score-page" class="container page">
         <h2 style="color:var(--secondary)">TOP 10</h2>
         <div id="score-list" class="score-box"></div>
@@ -168,7 +172,7 @@
         let last = null;
         let activeUser = "";
 
-        // İsim Kilidi Kontrolü
+        // Sayfa her açıldığında ismi kontrol et ve kilitliyse inputu kapat
         function checkIdentity() {
             const saved = localStorage.getItem('ten_user');
             const input = document.getElementById('user-input');
@@ -190,11 +194,11 @@
             const name = input.value.trim();
             
             if(!name) {
-                alert("İsim yazmadan giremezsin bro!");
+                alert("İsim yaz bro!");
                 return;
             }
 
-            // İLK DEFA YAZILIYORSA KİLİTLE
+            // Play'e basıldığı an ismi sonsuza kadar kilitle
             if(!localStorage.getItem('ten_user')) {
                 localStorage.setItem('ten_user', name);
                 input.readOnly = true;
@@ -245,7 +249,7 @@
                 cell.classList.add('filled');
                 last = { r, c };
                 updateScore(activeUser, num);
-                if(num === 100) alert("EFSANESİN!");
+                if(num === 100) alert("REİS 100 YAPTI!");
                 num++;
                 document.getElementById('cur-num').innerText = num;
                 refresh();
