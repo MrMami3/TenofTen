@@ -1,0 +1,72 @@
+body {
+    background-color: #1a1a1a;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.game-container {
+    text-align: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 5px;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    background-color: #444;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.cell:hover:not(.filled) {
+    background-color: #666;
+}
+
+.cell.filled {
+    background-color: #2ecc71;
+    color: #fff;
+    cursor: default;
+}
+
+.cell.valid-move {
+    background-color: #3498db;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.status-panel {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
