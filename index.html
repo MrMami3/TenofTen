@@ -1,94 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <title>Oyun</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: Arial;
-    }
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(10, 40px);
-      gap: 5px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .cell {
-      width: 40px;
-      height: 40px;
-      background: #eee;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .filled {
-      background: lightgreen;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Sayı Bulmacası</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<h1>Sayı Oyunu</h1>
-<p>1'den 100'e ulaş!</p>
-
-<div id="grid"></div>
-
-<script>
-let currentNumber = 1;
-let lastPosition = null;
-
-const grid = document.getElementById("grid");
-
-// grid oluştur
-for (let i = 0; i < 100; i++) {
-  let cell = document.createElement("div");
-  cell.classList.add("cell");
-
-  cell.addEventListener("click", () => {
-    if (cell.textContent !== "") return;
-
-    let index = i;
-    let row = Math.floor(index / 10);
-    let col = index % 10;
-
-    if (currentNumber === 1) {
-      place(cell, row, col);
-      return;
-    }
-
-    if (isValidMove(row, col)) {
-      place(cell, row, col);
-    } else {
-      alert("Geçersiz hareket!");
-    }
-  });
-
-  grid.appendChild(cell);
-}
-
-function place(cell, row, col) {
-  cell.textContent = currentNumber;
-  cell.classList.add("filled");
-  lastPosition = {row, col};
-  currentNumber++;
-}
-
-function isValidMove(r, c) {
-  let dr = Math.abs(r - lastPosition.row);
-  let dc = Math.abs(c - lastPosition.col);
-
-  // düz hareket 2 kare
-  if ((dr === 2 && dc === 0) || (dr === 0 && dc === 2)) return true;
-
-  // çapraz 2 kare (arada boşluk)
-  if (dr === 2 && dc === 2) return true;
-
-  return false;
-}
-</script>
-
+    <div class="game-container">
+        <h1>100'e Ulaş!</h1>
+        <div class="status-panel">
+            <p>Sıradaki Sayı: <span id="next-number">1</span></p>
+            <button id="reset-btn">Oyunu Sıfırla</button>
+        </div>
+        <div id="game-board" class="grid"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
